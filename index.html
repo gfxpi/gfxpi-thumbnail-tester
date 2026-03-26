@@ -3,156 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gfx_PI Elite Toolkit</title>
+    <title>Gfx_PI Elite Pro v6</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-        :root {
-            --accent: #00ff88;
-            --bg: #050505;
-            --card: #121212;
-            --border: #222;
-        }
-        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg); color: white; display: flex; height: 100vh; }
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap');
+        :root { --p: #00ffa3; --bg: #0d0d0d; --card: #161616; --txt: #ffffff; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Outfit', sans-serif; }
+        body { background: var(--bg); color: var(--txt); display: flex; height: 100vh; overflow: hidden; }
         
         /* Sidebar */
-        .sidebar { width: 240px; background: #0a0a0a; border-right: 1px solid var(--border); padding: 25px; display: flex; flex-direction: column; gap: 10px; }
-        .logo { font-weight: 800; font-size: 22px; margin-bottom: 30px; color: var(--accent); letter-spacing: -1px; }
-        .btn { background: none; border: none; color: #888; padding: 12px; text-align: left; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-        .btn:hover { background: #151515; color: white; }
-        .btn.active { background: var(--accent); color: black; }
+        .sidebar { width: 220px; background: #000; border-right: 1px solid #222; padding: 20px; display: flex; flex-direction: column; gap: 8px; }
+        .logo { font-size: 24px; font-weight: 900; margin-bottom: 30px; color: var(--p); text-align: center; }
+        .nav { background: none; border: none; color: #666; padding: 12px; text-align: left; border-radius: 8px; cursor: pointer; font-weight: 700; transition: 0.2s; font-size: 14px; }
+        .nav:hover { background: #111; color: #fff; }
+        .nav.active { background: var(--p); color: #000; }
 
-        /* Main Area */
-        .content { flex: 1; padding: 40px; overflow-y: auto; }
+        /* Main Content */
+        .main { flex: 1; padding: 30px; overflow-y: auto; }
         .tab { display: none; }
-        .tab.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .tab.active { display: block; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
 
-        .card { background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 16px; margin-top: 20px; }
-        input[type="file"] { margin-bottom: 20px; display: block; width: 100%; color: #888; }
-        
-        .viewer { width: 100%; max-width: 800px; aspect-ratio: 16/9; background: #000; border-radius: 12px; position: relative; background-size: contain; background-repeat: no-repeat; background-position: center; border: 1px solid #333; overflow: hidden; }
-        .grid-overlay { position: absolute; inset: 0; display: grid; grid-template: repeat(3, 1fr) / repeat(3, 1fr); pointer-events: none; opacity: 0.3; }
-        .grid-overlay div { border: 0.5px solid white; }
-        
-        .main-btn { background: var(--accent); color: black; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 800; cursor: pointer; text-decoration: none; display: inline-block; }
-        .loader { margin-top: 15px; color: var(--accent); display: none; font-size: 14px; font-weight: bold; }
+        .card { background: var(--card); border: 1px solid #222; padding: 25px; border-radius: 20px; margin-top: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h1 { font-size: 28px; font-weight: 900; }
+        .subtitle { color: #666; margin-bottom: 20px; }
+
+        input[type="file"] { background: #000; border: 1px solid #333; padding: 10px; width: 100%; border-radius: 8px; color: #888; margin-bottom: 15px; }
+        .btn { background: var(--p); color: #000; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 900; cursor: pointer; font-size: 14px; text-transform: uppercase; }
+        .btn:hover { box-shadow: 0 0 20px rgba(0,255,163,0.3); transform: translateY(-2px); }
+        .btn:active { transform: translateY(0); }
+
+        .result-box { width: 100%; max-width: 800px; aspect-ratio: 16/9; background: #050505; border-radius: 15px; margin-top: 20px; position: relative; border: 1px solid #333; background-size: contain; background-repeat: no-repeat; background-position: center; display: none; }
+        .loading { margin-top: 10px; font-size: 13px; color: var(--p); font-weight: bold; display: none; }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <div class="logo">GFX_PI<span>.</span></div>
-        <button class="btn active" onclick="show('dash')">Dashboard</button>
-        <button class="btn" onclick="show('up')">AI Upscaler</button>
-        <button class="btn" onclick="show('bg')">BG Remover</button>
-        <button class="btn" onclick="show('yt')">YT Previewer</button>
+        <div class="logo">GFX_PI</div>
+        <button class="nav active" onclick="go('dash')">DASHBOARD</button>
+        <button class="nav" onclick="go('up')">AI UPSCALER</button>
+        <button class="nav" onclick="go('bg')">BG REMOVER</button>
+        <button class="nav" onclick="go('yt')">YT PREVIEW</button>
     </div>
 
-    <div class="content">
+    <div class="main">
         <div id="dash" class="tab active">
-            <h1>Elite Toolkit v5</h1>
-            <p style="color: #666;">Everything a thumbnail designer needs, zero fluff.</p>
+            <h1>Elite Dashboard</h1>
+            <p class="subtitle">System active and ready for Peer Ifham.</p>
             <div class="card">
-                <h3>Welcome back, Peer Ifham.</h3>
-                <p style="margin-top:10px; opacity:0.7;">Select a tool to get started. All AI features are pre-linked with your keys.</p>
+                <h3>Welcome back, Boss.</h3>
+                <p style="font-size: 14px; color: #888; margin-top: 10px;">Select a tool from the left to start editing. All APIs are hardcoded.</p>
             </div>
         </div>
 
         <div id="up" class="tab">
-            <h1>AI Image Upscaler</h1>
+            <h1>AI Upscaler</h1>
+            <p class="subtitle">DeepAI Sr-Gan processing for low-res images.</p>
             <div class="card">
                 <input type="file" id="upIn">
-                <button class="main-btn" onclick="runUpscale()">Enhance Image</button>
-                <div id="upLoad" class="loader">Upscaling in progress... Do not refresh.</div>
-                <div id="upView" class="viewer" style="margin-top:20px; display:none;"></div>
-                <a id="upDl" class="main-btn" style="display:none; margin-top:15px;">Download Ultra-HD</a>
+                <button class="btn" onclick="upscale()">Upscale Now</button>
+                <div id="upLoad" class="loading">AI ANALYZING PIXELS... PLEASE WAIT.</div>
+                <div id="upRes" class="result-box"></div>
+                <a id="upDl" class="btn" style="display:none; margin-top:15px; text-decoration:none; text-align:center;">Download HD</a>
             </div>
         </div>
 
         <div id="bg" class="tab">
-            <h1>Background Remover</h1>
+            <h1>AI BG Remover</h1>
+            <p class="subtitle">Instant subject cutout using Remove.bg.</p>
             <div class="card">
                 <input type="file" id="bgIn">
-                <button class="main-btn" onclick="runBG()">Remove Background</button>
-                <div id="bgLoad" class="loader">Capping out the subject...</div>
-                <div id="bgView" class="viewer" style="margin-top:20px; display:none; background-color:#1a1a1a; border:1px dashed #444;"></div>
-                <a id="bgDl" class="main-btn" style="display:none; margin-top:15px;">Download PNG</a>
+                <button class="btn" onclick="removeBG()">Cut Out Image</button>
+                <div id="bgLoad" class="loading">CUTTING BACKGROUND... WAIT A SEC.</div>
+                <div id="bgRes" class="result-box" style="background-color: #111; border: 2px dashed #333;"></div>
+                <a id="bgDl" class="btn" style="display:none; margin-top:15px; text-decoration:none; text-align:center;">Download PNG</a>
             </div>
         </div>
 
         <div id="yt" class="tab">
-            <h1>YouTube Previewer</h1>
+            <h1>YT Previewer</h1>
+            <p class="subtitle">Check your thumbnail composition.</p>
             <div class="card">
-                <input type="file" id="ytIn">
-                <div id="ytView" class="viewer">
-                    <div class="grid-overlay"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-                </div>
+                <input type="file" id="ytIn" onchange="preview(this)">
+                <div id="ytRes" class="result-box" style="display:block;"></div>
             </div>
         </div>
     </div>
 
     <script>
-        function show(id) {
+        function go(id) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.nav').forEach(n => n.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             event.currentTarget.classList.add('active');
         }
 
-        // --- WORKING UPSCALER ---
-        async function runUpscale() {
+        // --- AI UPSCALER ---
+        async function upscale() {
             const file = document.getElementById('upIn').files[0];
             if(!file) return alert("Select image first!");
-            const loader = document.getElementById('upLoad');
-            loader.style.display = 'block';
+            const load = document.getElementById('upLoad');
+            load.style.display = 'block';
 
             const fd = new FormData(); fd.append('image', file);
             try {
                 const res = await fetch('https://api.deepai.org/api/torch-srgan', {
-                    method: 'POST', headers: {'api-key': '26d16552-a87a-40b4-bf5f-1561f169bcab'}, body: fd
+                    method: 'POST', 
+                    headers: {'api-key': '26d16552-a87a-40b4-bf5f-1561f169bcab'}, 
+                    body: fd
                 });
                 const data = await res.json();
                 if(data.output_url) {
-                    const view = document.getElementById('upView');
-                    view.style.backgroundImage = `url(${data.output_url})`;
-                    view.style.display = 'block';
+                    const resBox = document.getElementById('upRes');
+                    resBox.style.backgroundImage = `url(${data.output_url})`;
+                    resBox.style.display = 'block';
                     const dl = document.getElementById('upDl');
                     dl.href = data.output_url; dl.style.display = 'inline-block';
-                } else { alert("Upscale Failed. Try a smaller file."); }
-            } catch(e) { alert("API Error"); }
-            loader.style.display = 'none';
+                } else { alert("Error: File too large or API busy."); }
+            } catch(e) { alert("API Connection Error"); }
+            load.style.display = 'none';
         }
 
-        // --- WORKING BG REMOVER ---
-        async function runBG() {
+        // --- AI BG REMOVER ---
+        async function removeBG() {
             const file = document.getElementById('bgIn').files[0];
             if(!file) return alert("Select image first!");
-            const loader = document.getElementById('bgLoad');
-            loader.style.display = 'block';
+            const load = document.getElementById('bgLoad');
+            load.style.display = 'block';
 
             const fd = new FormData(); fd.append('image_file', file);
             try {
                 const res = await fetch('https://api.remove.bg/v1.0/removebg', {
-                    method: 'POST', headers: {'X-Api-Key': '56RegUoDjWFpVyQnT3TyuD3c'}, body: fd
+                    method: 'POST', 
+                    headers: {'X-Api-Key': '56RegUoDjWFpVyQnT3TyuD3c'}, 
+                    body: fd
                 });
                 if(res.ok) {
-                    const blob = await res.blob(); const url = URL.createObjectURL(blob);
-                    const view = document.getElementById('bgView');
-                    view.style.backgroundImage = `url(${url})`;
-                    view.style.display = 'block';
+                    const blob = await res.blob();
+                    const url = URL.createObjectURL(blob);
+                    const resBox = document.getElementById('bgRes');
+                    resBox.style.backgroundImage = `url(${url})`;
+                    resBox.style.display = 'block';
                     const dl = document.getElementById('bgDl');
-                    dl.href = url; dl.download = "GfxPI_NoBG.png"; dl.style.display = 'inline-block';
-                }
-            } catch(e) { alert("BG Error"); }
-            loader.style.display = 'none';
+                    dl.href = url; dl.download = "GfxPI_Cutout.png"; dl.style.display = 'inline-block';
+                } else { alert("Check API Limit or File Format"); }
+            } catch(e) { alert("Network Error"); }
+            load.style.display = 'none';
         }
 
         // --- PREVIEWER ---
-        document.getElementById('ytIn').onchange = e => {
-            const r = new FileReader(); r.onload = ev => document.getElementById('ytView').style.backgroundImage = `url(${ev.target.result})`;
-            r.readAsDataURL(e.target.files[0]);
-        };
+        function preview(input) {
+            if(input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('ytRes').style.backgroundImage = `url(${e.target.result})`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
     </script>
 </body>
 </html>
